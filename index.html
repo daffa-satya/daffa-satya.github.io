@@ -1,17 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World Website</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program Ketidakpastian</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-pzjw8f+ua7Kw1TIq0pW5p8HZQxgXO6muPmgf1KKvpcO3zSx4zBxZtjo93nF4z6r7" crossorigin="anonymous">
+
+  <!-- Custom CSS (optional) -->
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <div class="container">
-        <h1>Hello, World!</h1>
-        <p>Welcome to your first website!</p>
-        <button id="clickMeButton">Click Me!</button>
+  <div class="container mt-5">
+    <div class="text-center">
+      <h1>Program Ketidakpastian</h1>
+      <p class="lead">Menghitung ketidakpastian tunggal, ketidakpastian berulang, dan angka penting</p>
     </div>
-    <script src="script.js"></script>
+
+    <div id="menu">
+      <button class="btn btn-primary btn-block" onclick="selectOption(1)">1. Ketidakpastian Tunggal</button>
+      <button class="btn btn-primary btn-block" onclick="selectOption(2)">2. Ketidakpastian Berulang</button>
+      <button class="btn btn-primary btn-block" onclick="selectOption(3)">3. Angka Penting</button>
+      <button class="btn btn-info btn-block" onclick="selectOption(4)">4. Tutorial dan Credit</button>
+      <button class="btn btn-danger btn-block" onclick="selectOption(5)">5. Exit</button>
+    </div>
+
+    <div id="content" class="mt-4">
+      <!-- Content generated dynamically here -->
+    </div>
+
+    <div id="output" class="mt-3">
+      <!-- Output will appear here -->
+    </div>
+
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zyxj6+Ff5pB/HaU7X5jR7HE2vdrp0T4S6D2fQ5jz" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0pW5p8HZQxgXO6muPmgf1KKvpcO3zSx4zBxZtjo93nF4z6r7" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0pW5p8HZQxgXO6muPmgf1KKvpcO3zSx4zBxZtjo93nF4z6r7" crossorigin="anonymous"></script>
+
+  <!-- Custom JS -->
+  <script src="script.js"></script>
 </body>
+
 </html>
