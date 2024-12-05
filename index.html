@@ -3,66 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Pengukuran</title>
-    <!-- Bootstrap -->
+    <title>Kalkulator Fisika</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
             color: #ffffff;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         h1, h4 {
-            text-shadow: 2px 2px 5px #000000;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
         }
         .container {
             margin-top: 50px;
             padding: 20px;
-            border-radius: 10px;
+            border-radius: 15px;
             background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
+            box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.5);
         }
-        .btn {
-            font-size: 1.2rem;
+        .card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        .form-label {
-            font-weight: bold;
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #1d2671, #c33764);
+            border: none;
         }
         footer {
-            text-align: center;
             margin-top: 50px;
-            color: #b3cde0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #a8dadc;
+        }
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
         }
     </style>
 </head>
 <body>
-    <div class="container text-center">
-        <h1><i class="fas fa-atom"></i> Kalkulator Pengukuran</h1>
-        <p class="text-muted">Mendukung: Ketidakpastian Tunggal, Ketidakpastian Berulang, dan Identifikasi Angka Penting</p>
-
+    
+<!-- Hero Section -->
+<div class="text-center py-5">
+    <h1><i class="fas fa-atom"></i> Kalkulator Fisika </h1>
+    <p class="lead text-light">Jelajahi dunia fisika dengan kalkulator interaktif dan akurat.</p>
+</div>
         <!-- Menu -->
-        <div class="mt-4">
-            <select id="menu" class="form-select form-select-lg mb-3">
-                <option value="" disabled selected>Pilih fitur...</option>
-                <option value="1">Ketidakpastian Tunggal</option>
-                <option value="2">Ketidakpastian Berulang</option>
-                <option value="3">Identifikasi Angka Penting</option>
-            </select>
-        </div>
+        <div class="container text-center">
+        <select id="menu" class="form-select form-select-lg mb-3">
+            <option value="" disabled selected>Pilih fitur...</option>
+            <option value="1">Ketidakpastian Tunggal</option>
+            <option value="2">Ketidakpastian Berulang</option>
+            <option value="3">Identifikasi Angka Penting</option>
+            <option value="4">Operasi Angka Penting</option>
+        </select>
 
         <!-- Ketidakpastian Tunggal -->
         <div id="form-tunggal" class="d-none">
             <h4><i class="fas fa-balance-scale"></i> Ketidakpastian Tunggal</h4>
-            <div class="mb-3">
-                <label for="value" class="form-label">Nilai Pengukuran:</label>
-                <input type="text" id="value" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="scale" class="form-label">Skala Terkecil Alat Ukur:</label>
-                <input type="text" id="scale" class="form-control">
-            </div>
+            <input type="text" id="value" class="form-control my-2" placeholder="Nilai Pengukuran">
+            <input type="text" id="scale" class="form-control my-2" placeholder="Skala Terkecil Alat Ukur">
             <button class="btn btn-primary" onclick="calculateTunggal()">Hitung</button>
             <div id="output-tunggal" class="mt-3"></div>
         </div>
@@ -70,17 +84,11 @@
         <!-- Ketidakpastian Berulang -->
         <div id="form-berulang" class="d-none">
             <h4><i class="fas fa-chart-line"></i> Ketidakpastian Berulang</h4>
-            <div class="mb-3">
-                <label for="values" class="form-label">Masukkan Hasil Pengukuran (pisahkan dengan spasi):</label>
-                <input type="text" id="values" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="method" class="form-label">Metode Perhitungan:</label>
-                <select id="method" class="form-select">
-                    <option value="range">Jangkauan</option>
-                    <option value="stddev">Standar Deviasi</option>
-                </select>
-            </div>
+            <input type="text" id="values" class="form-control my-2" placeholder="Masukkan hasil pengukuran (pisahkan dengan spasi)">
+            <select id="method" class="form-select my-2">
+                <option value="range">Jangkauan</option>
+                <option value="stddev">Standar Deviasi</option>
+            </select>
             <button class="btn btn-primary" onclick="calculateBerulang()">Hitung</button>
             <div id="output-berulang" class="mt-3"></div>
         </div>
@@ -88,19 +96,35 @@
         <!-- Identifikasi Angka Penting -->
         <div id="form-penting" class="d-none">
             <h4><i class="fas fa-search"></i> Identifikasi Angka Penting</h4>
-            <div class="mb-3">
-                <label for="number" class="form-label">Masukkan Angka:</label>
-                <input type="text" id="number" class="form-control">
-            </div>
+            <input type="text" id="number" class="form-control my-2" placeholder="Masukkan angka">
             <button class="btn btn-primary" onclick="identifySignificantFigures()">Identifikasi</button>
             <div id="output-penting" class="mt-3"></div>
+        </div>
+
+        <!-- Operasi Angka Penting -->
+        <div id="form-operation" class="d-none">
+            <h4><i class="fas fa-calculator"></i> Operasi Angka Penting</h4>
+            <input type="text" id="nums" class="form-control my-2" placeholder="Masukkan angka (pisahkan dengan spasi)">
+            <select id="operation" class="form-select my-2">
+                <option value="add">Penjumlahan</option>
+                <option value="minus">Pengurangan</option>
+                <option value="multiply">Perkalian</option>
+                <option value="division">Pembagian</option>
+            </select>
+            <button class="btn btn-primary" onclick="calculateOperation()">Hitung</button>
+            <div id="output-operation" class="mt-3"></div>
         </div>
     </div>
 
     <footer>
-        <p>© 2024 Kalkulator Fisika | Dibuat dengan <i class="fas fa-heart text-danger"></i> oleh Anda</p>
+      <p><i>"Fisika adalah kunci untuk memahami alam semesta." - Stephen Hawking</i></p>  
+      <p>© 2024 Kalkulator Fisika | Dibuat oleh Daffa, Raihan, dan Joshua X-G 7027</p>
+        
     </footer>
 
+    </footer>
+
+    <!-- JavaScript -->
     <script>
         // Menampilkan form berdasarkan menu
         document.getElementById("menu").addEventListener("change", function () {
@@ -108,14 +132,16 @@
             document.getElementById("form-tunggal").classList.add("d-none");
             document.getElementById("form-berulang").classList.add("d-none");
             document.getElementById("form-penting").classList.add("d-none");
+            document.getElementById("form-operation").classList.add("d-none");
 
             if (value === "1") document.getElementById("form-tunggal").classList.remove("d-none");
             if (value === "2") document.getElementById("form-berulang").classList.remove("d-none");
             if (value === "3") document.getElementById("form-penting").classList.remove("d-none");
+            if (value === "4") document.getElementById("form-operation").classList.remove("d-none");
         });
-
-        // Ketidakpastian Tunggal
-        function calculateTunggal() {
+        
+// Ketidakpastian Tunggal
+function calculateTunggal() {
             const value = parseFloat(document.getElementById("value").value);
             const scale = parseFloat(document.getElementById("scale").value);
             if (isNaN(value) || isNaN(scale)) {
@@ -154,50 +180,121 @@
             `;
         }
 
-        // Fungsi untuk menghitung angka penting
-        function countSignificantFigures(input) {
-            input = input.trim(); // Menghapus spasi
-            if (isNaN(input) || input === "") return 0; // Jika bukan angka, kembalikan 0
-
-            // Deteksi notasi ilmiah
-            if (/e/i.test(input)) {
-                const [coefficient] = input.split(/e/i);
-                return countSignificantFigures(coefficient);
-            }
-
-            // Jika ada titik desimal
-            if (input.includes(".")) {
-                // Hitung semua angka bukan nol dan nol signifikan setelah desimal
-                return input.replace(/^0+|\./g, "").length;
-            }
-
-            // Angka bulat tanpa desimal
-            const trimmed = input.replace(/^0+/, ""); // Hapus nol di kiri
-            return trimmed.replace(/0+$/g, "").length; // Abaikan nol di akhir jika tanpa desimal
-        }
 
         // Identifikasi Angka Penting
+        function countSignificantFigures(s) {
+            let totalAP = 0; // Menunjukkan total angka penting
+            let nolKanan = 0;
+            let nolDiKiri = true; // Menunjukkan apakah sudah menemukan angka bukan nol
+            let desimal = false;
+
+            // Menghitung angka penting
+            for (const c of s) {
+                if (c === '0' && nolDiKiri) continue; // Abaikan nol awal
+
+                if (c === '.') {
+                    desimal = true;
+                } else if ((c !== '0' || desimal) && nolKanan > 0) {
+                    totalAP++;
+                    totalAP += nolKanan;
+                    nolKanan = 0;
+                } else if (c !== '0') {
+                    totalAP++; // Angka bukan nol dihitung sebagai angka penting
+                    nolDiKiri = false;
+                } else if (c === '0' && !nolDiKiri) {
+                    nolKanan++;
+                }
+            }
+
+            if (nolKanan > 0 && desimal) {
+                totalAP += nolKanan;
+            }
+
+            return totalAP;
+        }
+
         function identifySignificantFigures() {
             const input = document.getElementById("number").value.trim();
-
             if (!/^[0-9.eE+-]+$/.test(input)) {
                 alert("Masukkan angka yang valid!");
                 return;
             }
-
             const count = countSignificantFigures(input);
-
-            document.getElementById("output-penting").innerHTML = `
-                <strong>Angka Penting:</strong> ${count}<br>
-                <p>Jumlah angka penting dihitung sesuai aturan:<br>
-                - Angka nol di kiri sebelum angka pertama tidak penting.<br>
-                - Nol di kanan hanya penting jika terdapat tanda desimal.<br>
-                - Notasi ilmiah menghitung angka pada koefisien saja.</p>
-            `;
+            document.getElementById("output-penting").innerHTML = `<strong>Jumlah Angka Penting:</strong> ${count} 
+            <p> Angka penting adalah angka hasil pengukuran yang menunjukkan tingkat presisi pengukuran
+                </p>
+            <p>-Angka Nol di Kiri Tidak Penting</p>
+            <p>-Angka Nol di Kanan Penting Jika Ada Desimal</p>`;
         }
+
+        // Operasi Angka Penting
+        function additionSubtractionWithSF(nums) {
+            const precisions = nums.map(num => {
+                const decimalPos = num.toString().split(".")[1];
+                return decimalPos ? decimalPos.length : 0;
+            });
+            const minPrecision = Math.min(...precisions);
+            const result = nums.reduce((a, b) => a + b, 0);
+            return result.toFixed(minPrecision);
+        }
+
+        function multiplicationDivisionWithSF(nums) {
+            const sfCounts = nums.map(num => countSignificantFigures(num.toString()));
+            const minSF = Math.min(...sfCounts);
+            const result = nums.reduce((a, b) => a * b, 1);
+            return parseFloat(result.toPrecision(minSF));
+        }
+
+        function calculateOperation() {
+    const numsInput = document.getElementById("nums").value.trim().split(/\s+/).map(Number);
+    const operation = document.getElementById("operation").value;
+
+    if (numsInput.some(isNaN)) {
+        alert("Masukkan angka yang valid!");
+        return;
+    }
+
+    let result;
+
+    if (operation === "add" || operation === "minus") {
+        // Operasi penjumlahan atau pengurangan mengikuti jumlah angka desimal terkecil
+        const precisions = numsInput.map(num => {
+            const decimalPart = num.toString().split(".")[1];
+            return decimalPart ? decimalPart.length : 0;
+        });
+        const minPrecision = Math.min(...precisions);
+
+        if (operation === "add") {
+            result = numsInput.reduce((a, b) => a + b, 0);
+        } else if (operation === "minus") {
+            result = numsInput.reduce((a, b) => a - b);
+        }
+        result = result.toFixed(minPrecision);
+
+    } else if (operation === "multiply" || operation === "division") {
+        // Operasi perkalian atau pembagian mengikuti angka penting terkecil
+        const sfCounts = numsInput.map(num => countSignificantFigures(num.toString()));
+        const minSF = Math.min(...sfCounts);
+
+        if (operation === "multiply") {
+            result = numsInput.reduce((a, b) => a * b, 1);
+        } else if (operation === "division") {
+            result = numsInput.reduce((a, b) => a / b);
+        }
+        result = parseFloat(result.toPrecision(minSF));
+    } else {
+        alert("Operasi tidak valid!");
+        return;
+    }
+
+    document.getElementById("output-operation").innerHTML = `<strong>Hasil:</strong> ${result}
+    <p>Aturan Penjumlahan dan Pengurangan angka penting: hasil memiliki tingkat presisi terendah</p>
+    <p>Aturan Perkalian dan Pembagian: hasil memiliki AP tersedikit</p>`;
+}
     </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
