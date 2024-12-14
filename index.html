@@ -10,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+            background: linear-gradient(to bottom, #1a1919, #434343, #4e4d4d);
             color: #ffffff;
             font-family: 'Poppins', sans-serif;
         }
@@ -18,7 +18,7 @@
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
         }
         .container {
-            margin-top: 50px;
+            margin-top: 20px;
             padding: 20px;
             border-radius: 15px;
             background: rgba(255, 255, 255, 0.1);
@@ -40,7 +40,7 @@
             border: none;
         }
         footer {
-            margin-top: 50px;
+            margin-top: 30px;
             text-align: center;
             font-size: 0.9rem;
             color: #a8dadc;
@@ -60,7 +60,7 @@
 <!-- Hero Section -->
 <div class="text-center py-5">
     <h1><i class="fas fa-atom"></i> Kalkulator Fisika </h1>
-    <p class="lead text-light">Jelajahi dunia fisika dengan kalkulator interaktif dan akurat.</p>
+    <p class="lead text-light">Penilaian Sumatif Bentuk Projek Kurikulum Merdeka</p>
 </div>
         <!-- Menu -->
         <div class="container text-center">
@@ -112,9 +112,9 @@
     </div>
 
     <footer>
-      <p><i>"Fisika adalah kunci untuk memahami alam semesta." - Stephen Hawking</i></p>  
-      <p>© 2024 Kalkulator Fisika | Dibuat oleh Daffa, Raihan, dan Joshua X-G 7027</p>
-        
+      <h8 class="lead text-light">Kalkulator Fisika versi Console = <a href="https://www.github.com/daffa-satya/calc-ketidakpastian">Kalukulator Fisika versi Console</a></h8> <br>
+      <h8 class="lead text-light" ><i>"Fisika adalah kunci untuk memahami alam semesta." - Stephen Hawking</i></h8>  <br>
+      <h8 class="lead text-light">XG04 Daffa, XG29 Raihan, dan XG10 Joshua 7027. Disupervisi oleh guru Fisika SMAN 70, Pak Ikhwan</h8> 
     </footer>
 
 
@@ -201,9 +201,9 @@ function adjustUncertainty(value, uncertainty) {
             const roundedValue = value.toFixed(roundedUncertainty.split('.')[1]?.length || 0);
 
             document.getElementById("output-tunggal").innerHTML = `
-                <strong>Hasil:</strong> ${roundedValue} ± ${roundedUncertainty}<br>
-                <p>Ketidakpastian dihitung sebagai setengah skala terkecil alat ukur.</p>
-            `;
+                <strong>Hasil:</strong> ${roundedValue} ± ${roundedUncertainty}<br> 
+                <h6>Ketidakpastian Tunggal dilakukan pada sistem yang tidak bergerak atau tidak fluktuatif</h6>
+            <h6>- Ketidakpastiannya adalah ½ x skala terkecil alat ukur yang digunakan</h6>`;
         }
 
         // Ketidakpastian Berulang
@@ -242,17 +242,20 @@ function calculateBerulang() {
     const stdDev = Math.sqrt(variance);
 
     // Pembulatan hasil
-    const roundedRangeMean = parseFloat(rangeMean.toFixed(2));
+    const roundedRangeMean = parseFloat(rangeMean.toPrecision(2));
     const roundedRangeUncertainty = parseFloat(rangeUncertainty.toPrecision(1));
 
-    const roundedMean = parseFloat(mean.toFixed(2));
+    const roundedMean = parseFloat(mean.toPrecision(2));
     const roundedStdDev = parseFloat(stdDev.toPrecision(1));
 
     // Menampilkan hasil
     document.getElementById("output-berulang").innerHTML = `
         <strong>Hasil (Metode Range):</strong> ${roundedRangeMean} ± ${roundedRangeUncertainty}<br>
         <strong>Hasil (Metode Standar Deviasi):</strong> ${roundedMean} ± ${roundedStdDev}<br>
-        <p>Ketidakpastian dihitung menggunakan metode Range dan Standar Deviasi.</p>
+        <h6>Ketidakpastian berulang dilakukan pada sistem yang bergerak atau fluktuatif</h6>
+        <h6>Ketidakpastian dihitung menggunakan Metode Range dan Standar Deviasi</h6>
+        <h6>Rumus Metode Range : ½ x jangkauan; (jangkauan= nilai max-nilai min), x = ½ (nilai maks + nilai min)</h6>
+        <h6>Rumus Metode Standar Devisiasi: Δx = √(1 / n-1 * Σ(xᵢ - x̄)²)  </h6>
     `;
 }
 
@@ -291,7 +294,9 @@ function calculateOperation() {
                     resultValue = parsedNumbers.reduce((acc, num) => acc + num.value, 0);
                     resultUncertainty = parsedNumbers.reduce((acc, num) => acc + num.uncertainty, 0);
                 } else if (operation === "minus") {
-                    resultValue = parsedNumbers.reduce((acc, num) => acc - num.value);
+                    resultValue = parsedNumbers.slice(1).reduce(
+                (acc, num) => acc - num.value,
+                parsedNumbers[0].value);
                     resultUncertainty = parsedNumbers.reduce((acc, num) => acc + num.uncertainty, 0);
                 }
 
@@ -311,8 +316,10 @@ function calculateOperation() {
                     }, 0);
 
                 } else if (operation === "division") {
-                    resultValue = parsedNumbers.reduce((acc, num) => acc / num.value);
-
+                   resultValue = parsedNumbers.slice(1).reduce(
+                (acc, num) => acc / num.value,
+                parsedNumbers[0].value
+            );
                     resultUncertainty = resultValue * parsedNumbers.reduce((acc, num) => {
                         const relativeUncertainty = num.uncertainty / num.value;
                         return acc + relativeUncertainty;
@@ -328,8 +335,8 @@ function calculateOperation() {
 
             document.getElementById("output-operation").innerHTML = 
                 `<strong>Hasil:</strong> ${resultValue} +- ${resultUncertainty}<br>
-                <p>Aturan Penjumlahan/Pengurangan: presisi mengikuti angka desimal terkecil.</p> 
-                <p>Aturan Perkalian/Pembagian: presisi mengikuti angka penting terkecil.</p>`;
+                <h6>Aturan Penjumlahan/Pengurangan: Presisi mengikuti angka desimal terkecil.</h6> 
+                <h6>Aturan Perkalian/Pembagian: Presisi mengikuti angka penting terkecil.</h6>`;
         }
         // Identifikasi Angka Penting
         function countSignificantFigures(s) {
@@ -371,10 +378,10 @@ function calculateOperation() {
             }
             const count = countSignificantFigures(input);
             document.getElementById("output-penting").innerHTML = `<strong>Jumlah Angka Penting:</strong> ${count} 
-            <p> Angka penting adalah angka hasil pengukuran yang menunjukkan tingkat presisi pengukuran
-                </p>
-            <p>-Angka Nol di Kiri Tidak Penting</p>
-            <p>-Angka Nol di Kanan, Penting Jika Ada Desimal</p>`;
+            <h6> Angka penting adalah angka hasil pengukuran yang menunjukkan tingkat presisi pengukuran
+                </h6>
+            <h6>-Angka Nol di Kiri Tidak Penting</h6>
+            <h6>-Angka Nol di Kanan, Penting Jika Ada Desimal</h6>`;
         }
 
         
