@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Fisika</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to bottom, #1a1919, #434343, #4e4d4d);
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+        }
+        h1, h4 {
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+        .container {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #1d2671, #c33764);
+            border: none;
+        }
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #a8dadc;
+        }
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    
+<!-- Hero Section -->
+<div class="text-center py-5">
+    <h1><i class="fas fa-atom"></i> Kalkulator Fisika </h1>
+    <p class="lead text-light">Penilaian Sumatif Bentuk Projek Kurikulum Merdeka</p>
+</div>
+        <!-- Menu -->
+        <div class="container text-center">
+        <select id="menu" class="form-select form-select-lg mb-3">
+            <option value="" disabled selected>Pilih fitur...</option>
+            <option value="1">Ketidakpastian Tunggal</option>
+            <option value="2">Ketidakpastian Berulang</option>
+            <option value="3">Ketidakpastian Gabungan</option>
+            <option value="4">Identifikasi Angka Penting</option>
+        </select>
+
+        <!-- Ketidakpastian Tunggal -->
+        <div id="form-tunggal" class="d-none">
+            <h4><i class="fas fa-balance-scale"></i> Ketidakpastian Tunggal</h4>
+            <input type="text" id="value" class="form-control my-2" placeholder="Nilai Pengukuran">
+            <input type="text" id="scale" class="form-control my-2" placeholder="Skala Terkecil Alat Ukur">
+            <button class="btn btn-primary" onclick="calculateTunggal()">Hitung</button>
+            <div id="output-tunggal" class="mt-3"></div>
+        </div>
+
+        <!-- Ketidakpastian Berulang -->
+        <div id="form-berulang" class="d-none">
+            <h4><i class="fas fa-chart-line"></i> Ketidakpastian Berulang</h4>
+            <input type="text" id="values" class="form-control my-2" placeholder="Masukkan hasil pengukuran (pisahkan dengan spasi)">
+            <button class="btn btn-primary" onclick="calculateBerulang()">Hitung</button>
+            <div id="output-berulang" class="mt-3"></div>
+        </div>
+
+        <!-- Ketidakpastian Gabungan -->
+        <div id="form-operation" class="d-none">
+            <h4><i class="fas fa-calculator"></i> Ketidakpastian Gabungan</h4>
+            <input type="text" id="nums" class="form-control my-2" placeholder="Masukkan angka (contoh: 88+-5 atau 100.0)">
+            <select id="operation" class="form-select my-2">
+                <option value="add">Penjumlahan</option>
+                <option value="minus">Pengurangan</option>
+                <option value="multiply">Perkalian</option>
+                <option value="division">Pembagian</option>
+                </select>
+            <button class="btn btn-primary" onclick="calculateOperation()">Hitung</button>
+            <div id="output-operation" class="mt-3"></div>
+        </div>
+        <!-- Identifikasi Angka Penting -->
+        <div id="form-penting" class="d-none">
+            <h4><i class="fas fa-search"></i> Identifikasi Angka Penting</h4>
+            <input type="text" id="number" class="form-control my-2" placeholder="Masukkan angka">
+            <button class="btn btn-primary" onclick="identifySignificantFigures()">Identifikasi</button>
+            <div id="output-penting" class="mt-3"></div>
+        </div>
+    </div>
+
+    <footer>
+      <h8 class="lead text-light">Kalkulator Fisika versi Console = <a href="https://www.github.com/daffa-satya/calc-ketidakpastian">Kalukulator Fisika versi Console</a></h8> <br>
+      <h8 class="lead text-light" ><i>"Fisika adalah kunci untuk memahami alam semesta." - Stephen Hawking</i></h8>  <br>
+      <h8 class="lead text-light">XG04 Daffa, XG29 Raihan, dan XG10 Joshua 7027. Disupervisi oleh guru Fisika SMAN 70, Pak Ikhwan</h8> 
+    </footer>
+
+
+
+    <!-- JavaScript -->
+    <script>
+        // Menampilkan form berdasarkan menu
+        document.getElementById("menu").addEventListener("change", function () {
+            const value = this.value;
+            document.getElementById("form-tunggal").classList.add("d-none");
+            document.getElementById("form-berulang").classList.add("d-none");
+            document.getElementById("form-operation").classList.add("d-none");
+            document.getElementById("form-penting").classList.add("d-none");
+            
+
+            if (value === "1") document.getElementById("form-tunggal").classList.remove("d-none");
+            if (value === "2") document.getElementById("form-berulang").classList.remove("d-none");
+            if (value === "3") document.getElementById("form-operation").classList.remove("d-none");
+            if (value === "4") document.getElementById("form-penting").classList.remove("d-none");
+        });
+        // Fungsi untuk menghitung angka penting
+function countSignificantFigures(number) {
+    number = number.toString().trim();
+    // Hilangkan tanda negatif jika ada
+    if (number.startsWith("-")) number = number.slice(1);
+
+    // Angka nol di awal tidak dihitung
+    const trimmed = number.replace(/^0+/, "");
+    
+    // Jika ada desimal, hitung angka penting
+    if (trimmed.includes(".")) {
+        return trimmed.replace(".", "").length;
+    }
+
+    // Angka nol di kanan tidak dihitung jika tidak ada desimal
+    return trimmed.replace(/0+$/, "").length;
+}
+
+// Fungsi untuk membulatkan nilai ke angka penting tertentu
+function roundToSignificantFigures(value, significantFigures) {
+    if (value === 0) return 0;
+
+    const multiplier = Math.pow(10, significantFigures - Math.ceil(Math.log10(Math.abs(value))));
+    return Math.round(value * multiplier) / multiplier;
+}
+
+// Fungsi untuk menyesuaikan ketidakpastian ke satu angka penting
+function adjustUncertainty(value, uncertainty) {
+    // Hitung angka penting pada ketidakpastian
+    const significantFigures = countSignificantFigures(uncertainty);
+    const adjustedUncertainty = roundToSignificantFigures(uncertainty, 1); // Ketidakpastian jadi 1 angka penting
+    
+    // Sesuaikan nilai agar presisi sesuai ketidakpastian
+    const factor = Math.pow(10, Math.floor(Math.log10(adjustedUncertainty)));
+    const adjustedValue = Math.round(value / factor) * factor;
+
+    return {
+        value: adjustedValue,
+        uncertainty: adjustedUncertainty
+    };
+}
+
+        // Ketidakpastian Tunggal
+        function roundSpecial(value) {
+    // Aturan khusus untuk pembulatan
+    const integerPart = Math.floor(value);
+    const fractionalPart = value - integerPart;
+
+    if (fractionalPart === 0.5) {
+        return integerPart; // Membulatkan ke bawah jika tepat 0.5
+    }
+    return Math.round(value); // Gunakan pembulatan standar jika tidak 0.5
+}
+        function calculateTunggal() {
+            const value = parseFloat(document.getElementById("value").value);
+            const scale = parseFloat(document.getElementById("scale").value);
+            if (isNaN(value) || isNaN(scale)) {
+                alert("Masukkan angka yang valid!");
+                return;
+            }
+
+            const uncertainty = scale / 2;
+            const roundedUncertainty = uncertainty.toPrecision(1);
+            const roundedValue = value.toFixed(roundedUncertainty.split('.')[1]?.length || 0);
+
+            document.getElementById("output-tunggal").innerHTML = `
+                <strong>Hasil:</strong> ${roundedValue} ± ${roundedUncertainty}<br> 
+                <h6>Ketidakpastian Tunggal dilakukan pada sistem yang tidak bergerak atau tidak fluktuatif</h6>
+            <h6>- Ketidakpastiannya adalah ½ x skala terkecil alat ukur yang digunakan</h6>`;
+        }
+
+        // Ketidakpastian Berulang
+        function roundSpecial(value) {
+    // Aturan khusus untuk pembulatan
+    const integerPart = Math.floor(value);
+    const fractionalPart = value - integerPart;
+
+    if (fractionalPart === 0.5) {
+        return integerPart; // Membulatkan ke bawah jika tepat 0.5
+    }
+    return Math.round(value); // Gunakan pembulatan standar jika tidak 0.5
+}
+
+function calculateBerulang() {
+    // Ambil input data pengukuran
+    const input = document.getElementById("values").value.trim().split(/\s+/);
+    const values = input.map(Number).filter(val => !isNaN(val)); // Hanya ambil angka valid
+
+    // Validasi input
+    if (values.length < 2) {
+        alert("Masukkan setidaknya dua data pengukuran yang valid!");
+        return;
+    }
+
+    // Metode Range
+    const minValue = Math.min(...values);
+    const maxValue = Math.max(...values);
+    const rangeMean = (maxValue + minValue) / 2;
+    const rangeUncertainty = (maxValue - minValue) / 2;
+
+    // Metode Standar Deviasi Sampel
+    const mean = values.reduce((a, b) => a + b, 0) / values.length;
+    const deviations = values.map(val => Math.pow(val - mean, 2));
+    const variance = deviations.reduce((a, b) => a + b, 0) / (values.length - 1);
+    const stdDev = Math.sqrt(variance);
+
+    // Pembulatan hasil
+    const roundedRangeMean = parseFloat(rangeMean.toPrecision(2));
+    const roundedRangeUncertainty = parseFloat(rangeUncertainty.toPrecision(1));
+
+    const roundedMean = parseFloat(mean.toPrecision(2));
+    const roundedStdDev = parseFloat(stdDev.toPrecision(1));
+
+    // Menampilkan hasil
+    document.getElementById("output-berulang").innerHTML = `
+        <strong>Hasil (Metode Range):</strong> ${roundedRangeMean} ± ${roundedRangeUncertainty}<br>
+        <strong>Hasil (Metode Standar Deviasi):</strong> ${roundedMean} ± ${roundedStdDev}<br>
+        <h6>Ketidakpastian berulang dilakukan pada sistem yang bergerak atau fluktuatif</h6>
+        <h6>Ketidakpastian dihitung menggunakan Metode Range dan Standar Deviasi</h6>
+        <h6>Rumus Metode Range : ½ x jangkauan; (jangkauan= nilai max-nilai min), x = ½ (nilai maks + nilai min)</h6>
+        <h6>Rumus Metode Standar Devisiasi: Δx = √(1 / n-1 * Σ(xᵢ - x̄)²)  </h6>
+    `;
+}
+
+// Ketidakpastian gabungan
+
+function calculateOperation() {
+            const numsInput = document.getElementById("nums").value.trim().split(/\s+/);
+            const operation = document.getElementById("operation").value;
+
+            const parsedNumbers = numsInput.map(item => {
+                const match = item.match(/^(\d+(\.\d+)?)(?:\s*\+-\s*(\d+(\.\d+)?))?$/);
+                if (!match) {
+                    alert(`Format tidak valid: ${item}`);
+                    return null;
+                }
+                const value = parseFloat(match[1]);
+                const uncertainty = parseFloat(match[3] || "0");
+                return { value, uncertainty };
+            }).filter(Boolean);
+
+            if (parsedNumbers.length < 2) {
+                alert("Masukkan setidaknya dua angka dengan format valid (contoh: 88+-5 atau 100.0)!");
+                return;
+            }
+
+            let resultValue, resultUncertainty;
+
+            if (operation === "add" || operation === "minus") {
+                const precisions = parsedNumbers.map(num => {
+                    const decimalPart = num.value.toString().split(".")[1];
+                    return decimalPart ? decimalPart.length : 0;
+                });
+                const minPrecision = Math.min(...precisions);
+
+                if (operation === "add") {
+                    resultValue = parsedNumbers.reduce((acc, num) => acc + num.value, 0);
+                    resultUncertainty = parsedNumbers.reduce((acc, num) => acc + num.uncertainty, 0);
+                } else if (operation === "minus") {
+                    resultValue = parsedNumbers.slice(1).reduce(
+                (acc, num) => acc - num.value,
+                parsedNumbers[0].value);
+                    resultUncertainty = parsedNumbers.reduce((acc, num) => acc + num.uncertainty, 0);
+                }
+
+                resultValue = resultValue.toFixed(minPrecision);
+                resultUncertainty = resultUncertainty.toPrecision(1);
+
+            } else if (operation === "multiply" || operation === "division") {
+                const sfCounts = parsedNumbers.map(num => countSignificantFigures(num.value.toString()));
+                const minSF = Math.min(...sfCounts);
+
+                if (operation === "multiply") {
+                    resultValue = parsedNumbers.reduce((acc, num) => acc * num.value, 1);
+
+                    resultUncertainty = resultValue * parsedNumbers.reduce((acc, num) => {
+                        const relativeUncertainty = num.uncertainty / num.value;
+                        return acc + relativeUncertainty;
+                    }, 0);
+
+                } else if (operation === "division") {
+                   resultValue = parsedNumbers.slice(1).reduce(
+                (acc, num) => acc / num.value,
+                parsedNumbers[0].value
+            );
+                    resultUncertainty = resultValue * parsedNumbers.reduce((acc, num) => {
+                        const relativeUncertainty = num.uncertainty / num.value;
+                        return acc + relativeUncertainty;
+                    }, 0);
+                }
+
+                resultValue = parseFloat(resultValue.toPrecision(minSF));
+                resultUncertainty = parseFloat(resultUncertainty.toPrecision(1));
+            } else {
+                alert("Operasi tidak valid!");
+                return;
+            }
+
+            document.getElementById("output-operation").innerHTML = 
+                `<strong>Hasil:</strong> ${resultValue} +- ${resultUncertainty}<br>
+                <h6>Aturan Penjumlahan/Pengurangan: Presisi mengikuti angka desimal terkecil.</h6> 
+                <h6>Aturan Perkalian/Pembagian: Presisi mengikuti angka penting terkecil.</h6>`;
+        }
+        // Identifikasi Angka Penting
+        function countSignificantFigures(s) {
+            let totalAP = 0; // Menunjukkan total angka penting
+            let nolKanan = 0;
+            let nolDiKiri = true; // Menunjukkan apakah sudah menemukan angka bukan nol
+            let desimal = false;
+
+            // Menghitung angka penting
+            for (const c of s) {
+                if (c === '0' && nolDiKiri) continue; // Abaikan nol awal
+
+                if (c === '.') {
+                    desimal = true;
+                } else if ((c !== '0' || desimal) && nolKanan > 0) {
+                    totalAP++;
+                    totalAP += nolKanan;
+                    nolKanan = 0;
+                } else if (c !== '0') {
+                    totalAP++; // Angka bukan nol dihitung sebagai angka penting
+                    nolDiKiri = false;
+                } else if (c === '0' && !nolDiKiri) {
+                    nolKanan++;
+                }
+            }
+
+            if (nolKanan > 0 && desimal) {
+                totalAP += nolKanan;
+            }
+
+            return totalAP;
+        }
+
+        function identifySignificantFigures() {
+            const input = document.getElementById("number").value.trim();
+            if (!/^[0-9.eE+-]+$/.test(input)) {
+                alert("Masukkan angka yang valid!");
+                return;
+            }
+            const count = countSignificantFigures(input);
+            document.getElementById("output-penting").innerHTML = `<strong>Jumlah Angka Penting:</strong> ${count} 
+            <h6> Angka penting adalah angka hasil pengukuran yang menunjukkan tingkat presisi pengukuran
+                </h6>
+            <h6>-Angka Nol di Kiri Tidak Penting</h6>
+            <h6>-Angka Nol di Kanan, Penting Jika Ada Desimal</h6>`;
+        }
+
+        
+
+    </script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+  </html>
